@@ -69,6 +69,22 @@ def mutar_invertida(hijo_m, rango):
         hijo_m = hijo_m_aux1 + "0" + hijo_m_aux2
     return hijo_m
 
+def ordenar_asc(array1, array2):
+    #array1 = fobj; array2 = pob
+    length = len(array1) - 1
+    sorted = False
+
+    while not sorted:
+        sorted = True
+        for i in range(length):
+            if array1[i] < array1[i+1]:
+                sorted = False
+                array1[i], array1[i+1] = array1[i+1], array1[i]
+                array2[i], array2[i+1] = array2[i+1], array2[i]
+    
+    return array1, array2
+
+
 def main():
     #INICIALIZO LOS VALORES DE LOS PARAMETROS
     dom_desde = 0 # Dominio desde
@@ -81,6 +97,8 @@ def main():
     m_selec = "ruleta" #Metodo de seleccion
     m_cr = "1punto" #Metodo de crossover
     m_mu = "invertida" #Metodo de mutacion
+    elit = True #Bandera de si se realiza elitismo o no
+    r_elit = 3  #Cantidad de cromosomas en el grupo elite
 
     #CREO PRIMER POBLACION
     pob = crearpoblacioninicial(p = pobi, dom_d=dom_desde, dom_h=dom_hasta, l_cromosoma=l_crom)
@@ -103,7 +121,7 @@ def main():
     for c in range(0, ciclos):
         fobj = []
         suma = 0
-        for i in range(len(pob)): 
+        for i in range(pobi): 
             #Calculo de la funcion objetivo
             f = funcionobjetivo(pob[i]) 
             fobj.append(f)
@@ -126,14 +144,22 @@ def main():
         
         if(c==ciclos-1):
             print max(fobj)
-            break        
+            break
+        if elit:
+            fobj, pob = ordenar_asc(fobj, pob)
+            elite = []
+            for i in range(r_elit):
+                elite.append(pob[i])
+            if c == 0:
+                pobi = pobi - r_elit
+
         #Calculo fitness
         fobj_fitnes = [] 
         x = 0   
-        for i in range(len(fobj)):
+        for i in range(pobi):
             x = fobj[i]/suma
             fobj_fitnes.append(x)
-
+                
         #Hacemos la seleccion
         if (m_selec == "ruleta"):
             seleccionados = seleccionruleta(fitness=fobj_fitnes)
@@ -163,7 +189,10 @@ def main():
                     hijos[i] = mutar_invertida(hijo_m = hijos[i], rango=l_crom)
         
         #Siguiente generacion
-        pob = hijos
+        if elit:
+            pob = hijos + elite
+        else:
+            pob = hijos
         
             
 
