@@ -97,8 +97,8 @@ def main():
     m_selec = "ruleta" #Metodo de seleccion
     m_cr = "1punto" #Metodo de crossover
     m_mu = "invertida" #Metodo de mutacion
-    elit = True #Bandera de si se realiza elitismo o no
-    r_elit = 3  #Cantidad de cromosomas en el grupo elite
+    elit = False #Bandera de si se realiza elitismo o no
+    r_elit = 2  #Cantidad de cromosomas en el grupo elite
 
     #CREO PRIMER POBLACION
     pob = crearpoblacioninicial(p = pobi, dom_d=dom_desde, dom_h=dom_hasta, l_cromosoma=l_crom)
@@ -150,9 +150,13 @@ def main():
             elite = []
             for i in range(r_elit):
                 elite.append(pob[i])
+                del pob[i]                
             if c == 0:
+                for i in range(r_elit):
+                    del fobj[i]
                 pobi = pobi - r_elit
-
+        #print(len(pob), len(fobj))
+        
         #Calculo fitness
         fobj_fitnes = [] 
         x = 0   
