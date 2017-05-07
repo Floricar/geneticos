@@ -97,7 +97,7 @@ def main():
     m_selec = "ruleta" #Metodo de seleccion
     m_cr = "1punto" #Metodo de crossover
     m_mu = "invertida" #Metodo de mutacion
-    elit = False #Bandera de si se realiza elitismo o no
+    elit = True #Bandera de si se realiza elitismo o no
     r_elit = 2  #Cantidad de cromosomas en el grupo elite
 
     #CREO PRIMER POBLACION
@@ -121,14 +121,27 @@ def main():
     for c in range(0, ciclos):
         fobj = []
         suma = 0
-        for i in range(pobi): 
+        for i in range(len(pob)): 
             #Calculo de la funcion objetivo
             f = funcionobjetivo(pob[i]) 
             fobj.append(f)
             suma = suma + f
+        
+        if elit:
+            fobj, pob = ordenar_asc(fobj, pob)
+            print(fobj)
+            elite = []
+            for i in range(r_elit):
+                elite.append(pob[i])
+                del pob[i]                
+            if c == 0:
+                for i in range(r_elit):
+                    del fobj[i]
+                pobi = pobi - r_elit
+        
         maximo = max(fobj)
         minimo = min(fobj)
-        promedio = suma/pobi
+        promedio = suma/len(pob)
         saveFile = open('resultados.csv','a')
         saveFile.write(str(c+1))
         saveFile.write(',')
@@ -145,22 +158,13 @@ def main():
         if(c==ciclos-1):
             print max(fobj)
             break
-        if elit:
-            fobj, pob = ordenar_asc(fobj, pob)
-            elite = []
-            for i in range(r_elit):
-                elite.append(pob[i])
-                del pob[i]                
-            if c == 0:
-                for i in range(r_elit):
-                    del fobj[i]
-                pobi = pobi - r_elit
+        
         #print(len(pob), len(fobj))
         
         #Calculo fitness
         fobj_fitnes = [] 
         x = 0   
-        for i in range(pobi):
+        for i in range(len(pob)):
             x = fobj[i]/suma
             fobj_fitnes.append(x)
                 
@@ -195,6 +199,7 @@ def main():
         #Siguiente generacion
         if elit:
             pob = hijos + elite
+            print(fobj)
         else:
             pob = hijos
         
