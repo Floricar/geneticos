@@ -69,7 +69,7 @@ def mutar_invertida(hijo_m, rango):
         hijo_m = hijo_m_aux1 + "0" + hijo_m_aux2
     return hijo_m
 
-def ordenar_asc(array1, array2):
+def ordenar_desc(array1, array2):
     #array1 = fobj; array2 = pob
     length = len(array1) - 1
     sorted = False
